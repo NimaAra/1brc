@@ -47,7 +47,7 @@ internal static class Program
 
                 return finalResult;
             },
-            finalResult => finalResult.Values.OrderBy(x => x.Name));
+            finalResult => finalResult.Values.OrderBy(x => x.Name, StringComparer.Ordinal));
 
         StringBuilder builder = new();
         foreach (Stat item in result)
