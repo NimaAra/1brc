@@ -27,7 +27,7 @@ internal static class Program
         IOrderedEnumerable<Stat> result = chunks
             .AsParallel()
             .Aggregate(
-            () => new Dictionary<int, Stat>(500),
+            () => new Dictionary<int, Stat>(10_000),
             (localDic, item) => ProcessChunk(mmf, item.start, item.end, carriageReturnOffset, localDic),
             (finalResult, localDic) =>
             {
