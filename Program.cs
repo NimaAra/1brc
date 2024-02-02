@@ -17,6 +17,7 @@ internal static class Program
         Stopwatch sw = Stopwatch.StartNew();
 
         FileInfo input = new(args.Length > 0 ? args[0] : @"C:\Scratch\Downloads\1brc\measurements.small.txt");
+        input = input.LinkTarget is null ? input : new(input.LinkTarget);
 
         GetChunks(input, (uint)Environment.ProcessorCount, out bool hasCarriageReturn, out (long start, long end)[] chunks);
 
@@ -167,12 +168,15 @@ internal static class Program
 
     private static void GetChunks(FileInfo input, uint count, out bool hasCarriageReturn, out (long start, long end)[] chunks)
     {
+        long inputLength = input.Length;
+        
         const int BufferSize = 1024 * 1024;
 
         hasCarriageReturn = false;
 
         using FileStream fs = input.OpenRead();
-        long chunkSize = input.Length / count;
+        
+        long chunkSize = inputLength / count;
 
         byte[] buffer = new byte[BufferSize];
 
@@ -185,7 +189,7 @@ internal static class Program
             {
                 hasCarriageReturn = true;
             }
-            chunks = [(0, input.Length)];
+            chunks = [(0, inputLength)];
             return;
         }
 
@@ -196,7 +200,7 @@ internal static class Program
         {
             if (i == count - 1)
             {
-                chunks[i] = (startingPos, input.Length);
+                chunks[i] = (startingPos, inputLength);
                 break;
             }
 
